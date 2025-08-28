@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Business\Core.Business.csproj" />
+    <ProjectReference Include="..\MovieProject.DataAccess\MovieProject.DataAccess.csproj" />
+    <ProjectReference Include="..\MovieProject.Entities\MovieProject.Entities.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -20,11 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\Abstract\" />
-    <Folder Include="Repositories\Concrete\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Core.DataAccess\Core.DataAccess.csproj" />
     <ProjectReference Include="..\MovieProject.Entities\MovieProject.Entities.csproj" />
   </ItemGroup>
