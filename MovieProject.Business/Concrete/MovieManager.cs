@@ -4,73 +4,95 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Business;
+using Microsoft.EntityFrameworkCore;
 using MovieProject.Business.Abstract;
+using MovieProject.DataAccess.Repositories.Abstract;
 using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Concrete
 {
     public sealed class MovieManager : IMovieService
     {
+        private readonly IMovieRepository _movieRepository;
+        public MovieManager(IMovieRepository movieRepository)
+        {
+            _movieRepository = movieRepository;
+        }
+
+        public List<Movie> GetAll()
+        {
+            return _movieRepository.GetAll();
+        }
+
+        public List<Movie> GetByCategoryId(Guid categoryId)
+        {
+            return _movieRepository.GetAll(m=>m.CategoryId == categoryId).ToList();
+        }
+
+        public List<Movie> GetByDirectorId(Guid directorId)
+        {
+            return _movieRepository.GetAll(m => m.DirectorId == directorId).ToList();
+        }
+
+        public List<Movie> GetByGreaterThanIMDB(decimal imdb)
+        {
+            return _movieRepository.GetAll(m => m.IMDB >= imdb).ToList();
+        }
+
+        public Movie GetById(Guid id)
+        {
+            return _movieRepository.Get(m=>m.Id == id);
+        }
+
         public List<Movie> GetByIsActive()
         {
-            throw new NotImplementedException();
+            return _movieRepository.GetAll(m=>m.IsActive);
         }
 
         public List<Movie> GetByIsDeleted()
         {
-            throw new NotImplementedException();
+            return _movieRepository.GetAll(m => m.IsDeleted);
         }
 
-        List<Movie> IGenericService<Movie>.GetAll()
+        public List<Movie> GetByLessThanIMDB(decimal imdb)
         {
-            throw new NotImplementedException();
+            return _movieRepository.GetAll(m=> m.IMDB <= imdb).ToList();
         }
 
-        List<Movie> IMovieService.GetByCategoryId(Guid categoryId)
+        public List<Movie> GetByMoviesWithFullInfo(Guid actorId)
         {
-            throw new NotImplementedException();
+            return _movieRepository.GetQueryable()
+                .Include(m => m.Category)
+                .Include(m => m.Director)
+                .Include(m => m.Actors)
+                .ToList();
         }
 
-        
-
-        List<Movie> IMovieService.GetByGreaterThanIMDB(decimal imdb)
+        public List<Movie> GetByName(string name)
         {
-            throw new NotImplementedException();
+            return _movieRepository.GetAll(m => m.Name.ToLower() == name.ToLower()).ToList();
         }
 
-        Movie IGenericService<Movie>.GetById(Guid id)
+        public IQueryable<Movie> GetQueryable()
         {
-            throw new NotImplementedException();
+           return _movieRepository.GetQueryable();
         }
 
-        List<Movie> IMovieService.GetByLessThanIMDB(decimal imdb)
+        public void Insert(Movie entity)
         {
-            throw new NotImplementedException();
+            _movieRepository.Add(entity);
         }
 
-        List<Movie> IMovieService.GetByName(string name)
+        public void Modify(Movie entity)
         {
-            throw new NotImplementedException();
+            _movieRepository.Update(entity);
         }
 
-        IQueryable<Movie> IGenericService<Movie>.GetQueryable()
+        public void Remove(Movie entity)
         {
-            throw new NotImplementedException();
-        }
-
-        void IGenericService<Movie>.Insert(Movie entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IGenericService<Movie>.Modify(Movie entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IGenericService<Movie>.Remove(Movie entity)
-        {
-            throw new NotImplementedException();
+            entity.IsDeleted = true;
+            entity.IsActive = false;
+            _movieRepository.Delete(entity);
         }
     }
 }

@@ -1,4 +1,10 @@
 
+using MovieProject.Business.Abstract;
+using MovieProject.Business.Concrete;
+using MovieProject.DataAccess.Contexts;
+using MovieProject.DataAccess.Repositories.Abstract;
+using MovieProject.DataAccess.Repositories.Concrete.EntityFramework;
+
 namespace MovieProject.WebAPI
 {
     public class Program
@@ -10,6 +16,11 @@ namespace MovieProject.WebAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<MovieDbContext>();
+            builder.Services.AddScoped<ICategoryService,CategoryManager>();
+            builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
+            
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

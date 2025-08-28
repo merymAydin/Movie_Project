@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\MovieProject.Business\MovieProject.Business.csproj" />
   </ItemGroup>
 
 </Project>

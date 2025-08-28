@@ -14,5 +14,7 @@ namespace MovieProject.Business.Abstract
         List<Movie> GetByLessThanIMDB(decimal imdb);
         List<Movie> GetByGreaterThanIMDB(decimal imdb);
         List<Movie> GetByCategoryId(Guid categoryId);
+        List<Movie> GetByDirectorId(Guid  directorId);
+        List<Movie> GetByMoviesWithFullInfo(Guid actorId);
     }
 }
