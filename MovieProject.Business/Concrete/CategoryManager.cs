@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,11 +49,14 @@ namespace MovieProject.Business.Concrete
 
         public void Modify(Category entity)
         {
+            entity.UpdateAt = DateTime.Now;
             _categoryRepository.Update(entity);
         }
 
         public void Remove(Category entity)
         {
+            entity.IsDeleted = true;
+            entity.IsActive = false;
             _categoryRepository.Delete(entity);
         }
     }

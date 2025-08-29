@@ -1,4 +1,6 @@
-
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+using System.Xml;
 using MovieProject.Business.Abstract;
 using MovieProject.Business.Concrete;
 using MovieProject.DataAccess.Contexts;
@@ -14,12 +16,20 @@ namespace MovieProject.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    options.JsonSerializerOptions.WriteIndented = true;
+                });
 
-            builder.Services.AddControllers();
             builder.Services.AddDbContext<MovieDbContext>();
             builder.Services.AddScoped<ICategoryService,CategoryManager>();
             builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
-            
+            builder.Services.AddScoped<IMovieService, MovieManager>();
+            builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
+            builder.Services.AddScoped<IDirectorService, DirectorManager>();
+            builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

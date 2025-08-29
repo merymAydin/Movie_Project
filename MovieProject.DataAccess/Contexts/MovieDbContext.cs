@@ -29,7 +29,7 @@ namespace MovieProject.DataAccess.Contexts
 
             //Category model configuration
             modelBuilder.Entity<Category>().Property(c => c.Name).HasMaxLength(50).IsRequired();
-            modelBuilder.Entity<Category>().Property(c => c.Description).HasMaxLength(250).IsRequired();
+            modelBuilder.Entity<Category>().Property(c => c.Description).HasMaxLength(250);
 
             //Director model configuration
             modelBuilder.Entity<Director>().Property(d => d.FirstName).HasMaxLength(50).IsRequired();

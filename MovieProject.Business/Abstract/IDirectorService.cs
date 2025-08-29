@@ -13,5 +13,6 @@ namespace MovieProject.Business.Abstract
         List<Director> GetByFirstName(string firstname);
         List<Director> GetByLastName(string lastname);
         Director GetByFullName(string firstName, string lastName);
+        List<Director> GetAllFullInfo();
     }
 }
