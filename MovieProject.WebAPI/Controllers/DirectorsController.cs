@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.IO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieProject.Business.Abstract;
+using MovieProject.Entities.Entities;
 
 namespace MovieProject.WebAPI.Controllers
 {
@@ -29,16 +31,55 @@ namespace MovieProject.WebAPI.Controllers
             var directors = _directorService.GetAllFullInfo();
             var dto = directors.Select(d => new
             {
-                ID = d.Id,
-                Name = d.FirstName,
-                Lastname = d.LastName,
-                Image = d.imageUrl,
-                BirthDate = d.BirthDate,
-                Description = d.Description,
+                d.Id,
+                d.FirstName,
+                d.LastName,
+                d.imageUrl,
+                d.BirthDate,
+                d.Description,
                 Movies = d.Movies.Select(m => new
                 {
-                    Movie = m.Name,
-                    Category = m.Category.Name
+                     m.Name,
+                    Category = m.Category.Name,
+                    m.Category.Description
+                }).ToList()
+            }).ToList();
+            return Ok(dto);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetDirector(string id)
+        {
+            Director director = _directorService.GetById(Guid.Parse(id));
+            var dto = new
+            {
+                director.Id,
+                director.FirstName,
+                director.LastName,
+                director.imageUrl,
+                director.BirthDate,
+                director.Description,
+                Movies = director.Movies.Select(m => new
+                {
+                    m.Name
+                }).ToList()
+            };
+            return Ok(dto);
+        }
+        [HttpGet("GetAllIsActive")]
+        public IActionResult GetAllIsActive()
+        {
+            var directors = _directorService.GetByIsActive();
+            var dto = directors.Select(d => new
+            {
+                d.Id,
+                d.FirstName,
+                d.LastName,
+                d.imageUrl,
+                d.BirthDate,
+                d.Description,
+                Movies = d.Movies.Select(m => new
+                {
+                    m.Name
                 }).ToList()
             }).ToList();
             return Ok(dto);

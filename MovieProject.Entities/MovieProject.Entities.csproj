@@ -10,4 +10,8 @@
     <ProjectReference Include="..\CoreEntity\CoreEntity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\Actors\" />
+  </ItemGroup>
+
 </Project>

@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieProject.Business.Abstract;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using MovieProject.Entities.Entities;
+using MovieProject.Business.Mappers.Categories;
+using MovieProject.Entities.Dtos.Categories;
 
 namespace MovieProject.WebAPI.Controllers
 {
@@ -11,9 +14,11 @@ namespace MovieProject.WebAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly ManuelCategoryMapper _mapper;
         public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
+            _mapper = new ManuelCategoryMapper();
         }
         [HttpGet]
         public IActionResult GetAll()
@@ -56,6 +61,24 @@ namespace MovieProject.WebAPI.Controllers
         {
             var category = _categoryService.GetByIsActive();
             return Ok(category);
+        }
+
+        [HttpGet("GetAllFullInfo")]
+        public IActionResult GetAllFullInfo()
+        {
+            var categories = _categoryService.GetQueryable().Include(c=>c.Movies).ToList();
+            //List<CategoryResponseDto> dtos = new List<CategoryResponseDto>();
+            //foreach (var category in categories)
+            //{
+            //    dtos.Add(new CategoryResponseDto
+            //    {
+            //        Id = category.Id,
+            //        Name = category.Name ?? string.Empty,
+            //        Description = category.Description ?? string.Empty
+            //    });
+            //}
+            var dto = _mapper.ConvertToResponseList(categories);
+            return Ok(dto);
         }
     }
 }

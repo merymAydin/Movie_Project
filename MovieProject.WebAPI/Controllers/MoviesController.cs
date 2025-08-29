@@ -23,11 +23,34 @@ namespace MovieProject.WebAPI.Controllers
             return Ok(movies);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        [HttpGet("FullInfo")]
+        public IActionResult GetAllFullInfo()
         {
-            var movie = _movieService.GetById(id);
-            return Ok(movie);
+            var movies = _movieService.GetByMoviesWithFullInfo();
+            var dto = movies.Select(m => new
+            {
+                m.Id,
+                m.Name,
+                m.Description,
+                m.IMDB,
+                Category = new
+                {
+                    m.Category.Name
+                },
+                Director = new
+                {
+                    m.Director.FirstName,
+                    m.Director.LastName,
+                    m.Director.imageUrl
+                },
+                Actors = m.Actors.Select(a => new
+                {
+                    a.FirstName,
+                    a.LastName,
+                    a.imageUrl
+                }).ToList()
+            }).ToList();
+            return Ok(dto);
         }
 
         [HttpPost]
@@ -42,6 +65,13 @@ namespace MovieProject.WebAPI.Controllers
         {
             _movieService.Modify(movie);
             return Ok(movie);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            var movie = _movieService.GetById(id);
+            _movieService.Remove(movie);
+            return Content("Movie was deleted successfully...");
         }
     }
 }
