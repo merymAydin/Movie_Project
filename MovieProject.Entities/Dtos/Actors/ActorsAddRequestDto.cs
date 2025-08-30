@@ -13,5 +13,5 @@ namespace MovieProject.Entities.Dtos.Actors
         string? imageUrl,
         DateTime? BirthDate,
         string? Description
-    ) : IDto;
+    ) : ICreateDto;
 }

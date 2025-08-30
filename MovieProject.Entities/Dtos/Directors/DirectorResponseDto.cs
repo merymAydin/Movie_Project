@@ -14,5 +14,5 @@ namespace MovieProject.Entities.Dtos.Directors
         string ImageUrl,
         DateTime BirthDate,
         string Description
-    ) : IDto;
+    ) : IResponseDto;
 }

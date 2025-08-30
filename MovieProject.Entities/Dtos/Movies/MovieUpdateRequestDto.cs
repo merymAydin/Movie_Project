@@ -2,7 +2,7 @@
 
 namespace MovieProject.Entities.Dtos.Movies;
 
-public sealed record MovieUpdateRequestDto : IDto
+public sealed record MovieUpdateRequestDto : IUpdateDto
 {
     public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;

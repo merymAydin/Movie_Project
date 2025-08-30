@@ -7,7 +7,7 @@ using CoreEntity;
 
 namespace MovieProject.Entities.Dtos.Movies
 {
-    public sealed record MovieResponseDto : IDto
+    public sealed record MovieResponseDto : IResponseDto
     {
         public Guid Id { get; init; }
         public string Name { get; init; } = string.Empty;

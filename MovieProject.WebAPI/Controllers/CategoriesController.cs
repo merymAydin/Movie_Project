@@ -14,11 +14,9 @@ namespace MovieProject.WebAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly ICategoryMapper _mapper;
-        public CategoriesController(ICategoryService categoryService, ICategoryMapper mapper)
+        public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            _mapper = mapper;
         }
         [HttpGet]
         public IActionResult GetAll()
@@ -35,14 +33,14 @@ namespace MovieProject.WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        public IActionResult Create(CategoryAddRequestDto category)
         {
             _categoryService.Insert(category);
             return Ok(category);
         }
 
         [HttpPut]
-        public IActionResult Update(Category category)
+        public IActionResult Update(CategoryUpdateRequestDto category)
         {
             _categoryService.Modify(category);
             return Content("Category was updated successfully");
@@ -51,34 +49,33 @@ namespace MovieProject.WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            var category = _categoryService.GetById(id);
-            _categoryService.Remove(category);
+            _categoryService.Remove(id);
             return Content("Category was deleted successfully...");
         }
 
-        [HttpGet("active")]
-        public IActionResult GetActiveCategories()
-        {
-            var category = _categoryService.GetByIsActive();
-            return Ok(category);
-        }
+        //[HttpGet("active")]
+        //public IActionResult GetActiveCategories()
+        //{
+        //    var category = _categoryService.GetByIsActive();
+        //    return Ok(category);
+        //}
 
-        [HttpGet("GetAllFullInfo")]
-        public IActionResult GetAllFullInfo()
-        {
-            var categories = _categoryService.GetQueryable().Include(c=>c.Movies).ToList();
-            //List<CategoryResponseDto> dtos = new List<CategoryResponseDto>();
-            //foreach (var category in categories)
-            //{
-            //    dtos.Add(new CategoryResponseDto
-            //    {
-            //        Id = category.Id,
-            //        Name = category.Name ?? string.Empty,
-            //        Description = category.Description ?? string.Empty
-            //    });
-            //}
-            var dto = _mapper.ConvertToResponseList(categories);
-            return Ok(dto);
-        }
+        //[HttpGet("GetAllFullInfo")]
+        //public IActionResult GetAllFullInfo()
+        //{
+        //    var categories = _categoryService.GetQueryable().Include(c=>c.Movies).ToList();
+        //    //List<CategoryResponseDto> dtos = new List<CategoryResponseDto>();
+        //    //foreach (var category in categories)
+        //    //{
+        //    //    dtos.Add(new CategoryResponseDto
+        //    //    {
+        //    //        Id = category.Id,
+        //    //        Name = category.Name ?? string.Empty,
+        //    //        Description = category.Description ?? string.Empty
+        //    //    });
+        //    //}
+        //    var dto = _mapper.ConvertToResponseList(categories);
+        //    return Ok(dto);
+        //}
     }
 }

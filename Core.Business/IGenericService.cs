@@ -8,15 +8,17 @@ using CoreEntity;
 
 namespace Core.Business
 {
-    public interface IGenericService<T> where T : class,IEntity,new()
+    public interface IGenericService<TEntity,TResponseDto,TCreateDto,TUpdateDto> 
+        where TEntity : class,IEntity,new()
+        where TResponseDto : class,IResponseDto
+        where TCreateDto : class, ICreateDto
+        where TUpdateDto : class, IUpdateDto
+
     {
-        void Insert(T entity);
-        void Modify(T entity);
-        void Remove(T entity);
-        List<T> GetAll();
-        T GetById(Guid id);
-        IQueryable<T> GetQueryable();
-        List<T> GetByIsActive();
-        List<T> GetByIsDeleted();
+        void Insert(TCreateDto dto);
+        void Modify(TUpdateDto dto);
+        void Remove(Guid id);
+        ICollection<TResponseDto> GetAll();
+        TResponseDto GetById(Guid id);
     }
 }

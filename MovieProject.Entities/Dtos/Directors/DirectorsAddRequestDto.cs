@@ -8,4 +8,4 @@ public sealed record DirectorsAddRequestDto(
     string ImageUrl, 
     DateTime BirthDate,
     string Description
-) : IDto;
+) : ICreateDto;
