@@ -8,7 +8,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Mappers.Categories
 {
-    public sealed class ManuelCategoryMapper 
+    public sealed class ManuelCategoryMapper : ICategoryMapper
     {
         public Category ConvertToEntity(CategoryAddRequestDto dto)
         {

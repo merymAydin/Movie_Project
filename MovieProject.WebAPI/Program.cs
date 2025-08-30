@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using System.Xml;
 using MovieProject.Business.Abstract;
 using MovieProject.Business.Concrete;
+using MovieProject.Business.Mappers.Categories;
+using MovieProject.Business.Mappers.Profiles;
 using MovieProject.DataAccess.Contexts;
 using MovieProject.DataAccess.Repositories.Abstract;
 using MovieProject.DataAccess.Repositories.Concrete.EntityFramework;
@@ -30,7 +32,10 @@ namespace MovieProject.WebAPI
             builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
             builder.Services.AddScoped<IDirectorService, DirectorManager>();
             builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
-
+            builder.Services.AddScoped<IActorService, ActorManager>();
+            builder.Services.AddScoped<IActorRepository, EfActorRepository>();
+            builder.Services.AddScoped<ICategoryMapper, AutoCategoryMapper>();
+            builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

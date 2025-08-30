@@ -14,11 +14,11 @@ namespace MovieProject.WebAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly ManuelCategoryMapper _mapper;
-        public CategoriesController(ICategoryService categoryService)
+        private readonly ICategoryMapper _mapper;
+        public CategoriesController(ICategoryService categoryService, ICategoryMapper mapper)
         {
             _categoryService = categoryService;
-            _mapper = new ManuelCategoryMapper();
+            _mapper = mapper;
         }
         [HttpGet]
         public IActionResult GetAll()
