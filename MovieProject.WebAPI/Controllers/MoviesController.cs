@@ -25,56 +25,36 @@ namespace MovieProject.WebAPI.Controllers
             return Ok(movies);
         }
 
-        //[HttpGet("FullInfo")]
-        //public IActionResult GetAllFullInfo()
-        //{
-            //var movies = _movieService.GetByMoviesWithFullInfo();
-            //var dto = movies.Select(m => new
-            //{
-            //    m.Id,
-            //    m.Name,
-            //    m.Description,
-            //    m.IMDB,
-            //    Category = new
-            //    {
-            //        m.Category.Name
-            //    },
-            //    Director = new
-            //    {
-            //        m.Director.FirstName,
-            //        m.Director.LastName,
-            //        m.Director.imageUrl
-            //    },
-            //    Actors = m.Actors.Select(a => new
-            //    {
-            //        a.FirstName,
-            //        a.LastName,
-            //        a.imageUrl
-            //    }).ToList()
-            //}).ToList();
-        //    var dto = _mapper.Map<List<MovieResponseDto>>(movies);
-        //    return Ok(dto);
-        //}
-
+        [HttpGet("FullInfo")]
+        public IActionResult GetAllFullInfo()
+        {
+            var movies = _movieService.GetByMoviesWithFullInfo();
+            return Ok();
+        }
+        [HttpGet("{id : guid}")]
+        public IActionResult GetById([FromRoute(Name = "id")]Guid id)
+        {
+            var movies = _movieService.GetById(id);
+            return Ok(movies);
+        }
         [HttpPost]
-        public IActionResult Create(Movie movie)
+        public IActionResult Insert([FromBody] MovieAddRequestDto dto)
         {
-            _movieService.Insert(movie);
-            return Ok(movie);
+            _movieService.Insert(dto);
+            return StatusCode(201, dto);
+        }
+        [HttpPut]
+        public IActionResult Update([FromBody] MovieUpdateRequestDto dto)
+        {
+            _movieService.Modify(dto);
+            return Ok(dto);
+        }
+        [HttpDelete("{id : guid}")]
+        public IActionResult Delete([FromRoute(Name = "id")] Guid id)
+        {
+            _movieService.Remove(id);
+            return Content("Movie was deleted successfully");
         }
 
-        [HttpPut]
-        public IActionResult Update(Movie movie)
-        {
-            _movieService.Modify(movie);
-            return Ok(movie);
-        }
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
-        {
-            var movie = _movieService.GetById(id);
-            _movieService.Remove(movie);
-            return Content("Movie was deleted successfully...");
-        }
     }
 }

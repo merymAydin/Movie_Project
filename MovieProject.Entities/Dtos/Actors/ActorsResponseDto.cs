@@ -10,4 +10,4 @@ public sealed record ActorsResponseDto(
     DateTime? BirthDate,
     string Description,
     bool isActive = true
-) : IDto;
+) : IResponseDto;

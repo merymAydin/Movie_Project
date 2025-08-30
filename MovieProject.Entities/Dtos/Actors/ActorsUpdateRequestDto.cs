@@ -11,4 +11,4 @@ public sealed record ActorsUpdateRequestDto(
     string Description,
     bool isActive = true,
     bool isDeleted = false
-) : IDto;
+) : IUpdateDto;

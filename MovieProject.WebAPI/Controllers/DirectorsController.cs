@@ -29,28 +29,28 @@ namespace MovieProject.WebAPI.Controllers
             return Ok(directors);
         }
 
-        [HttpGet("FullInfo")]
-        public IActionResult GetFullInfo()
-        {
-            var directors = _directorService.GetAllFullInfo();
-            //var dto = directors.Select(d => new
-            //{
-            //    d.Id,
-            //    d.FirstName,
-            //    d.LastName,
-            //    d.imageUrl,
-            //    d.BirthDate,
-            //    d.Description,
-            //    Movies = d.Movies.Select(m => new
-            //    {
-            //         m.Name,
-            //        Category = m.Category.Name,
-            //        m.Category.Description
-            //    }).ToList()
-            //}).ToList();
-            var dto = _mapper.Map<List<DirectorResponseDto>>(directors);
-            return Ok(dto);
-        }
+        //[HttpGet("FullInfo")]
+        //public IActionResult GetFullInfo()
+        //{
+        //    //var directors = _directorService.GetAllFullInfo();
+        //    //var dto = directors.Select(d => new
+        //    //{
+        //    //    d.Id,
+        //    //    d.FirstName,
+        //    //    d.LastName,
+        //    //    d.imageUrl,
+        //    //    d.BirthDate,
+        //    //    d.Description,
+        //    //    Movies = d.Movies.Select(m => new
+        //    //    {
+        //    //         m.Name,
+        //    //        Category = m.Category.Name,
+        //    //        m.Category.Description
+        //    //    }).ToList()
+        //    //}).ToList();
+        //    var dto = _mapper.Map<List<DirectorResponseDto>>(directors);
+        //    return Ok(dto);
+        //}
         [HttpGet("{id}")]
         public IActionResult GetDirector(string id)
         {
