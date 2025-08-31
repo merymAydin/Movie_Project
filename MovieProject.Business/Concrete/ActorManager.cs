@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Business;
 using Microsoft.EntityFrameworkCore;
 using MovieProject.Business.Abstract;
 using MovieProject.DataAccess.Repositories.Abstract;
+using MovieProject.Entities.Dtos.Actors;
 using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Concrete
@@ -21,6 +23,11 @@ namespace MovieProject.Business.Concrete
         public List<Actor> GetAll()
         {
             return _actorRepository.GetAll();
+        }
+
+        public Task<ICollection<ActorsResponseDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public List<Actor> GetAllByWithMovie()
@@ -41,6 +48,11 @@ namespace MovieProject.Business.Concrete
         public Actor GetById(Guid id)
         {
             return _actorRepository.Get(a => a.Id == id);
+        }
+
+        public Task<ActorsResponseDto> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public List<Actor> GetByIsActive()
@@ -68,14 +80,54 @@ namespace MovieProject.Business.Concrete
             _actorRepository.Add(entity);
         }
 
+        public void Insert(ActorsAddRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task InsertAsync(ActorsAddRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Modify(Actor entity)
         {
             _actorRepository.Update(entity);
         }
 
+        public void Modify(ActorsUpdateRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Remove(Actor entity)
         {
             _actorRepository.Delete(entity);
+        }
+
+        public void Remove(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(ActorsUpdateRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        ICollection<ActorsResponseDto> IGenericService<Actor, ActorsResponseDto, ActorsAddRequestDto, ActorsUpdateRequestDto>.GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        ActorsResponseDto IGenericService<Actor, ActorsResponseDto, ActorsAddRequestDto, ActorsUpdateRequestDto>.GetById(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -18,12 +18,15 @@ namespace MovieProject.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllers()
-                .AddJsonOptions(options =>
+            builder.Services.AddCors(options =>
                 {
-                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-                    options.JsonSerializerOptions.WriteIndented = true;
-                });
+                    options.AddPolicy("AllowAllOrigins",
+                        builder => builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                    );
+                }
+            );
 
             builder.Services.AddDbContext<MovieDbContext>();
             builder.Services.AddScoped<ICategoryService,CategoryManager>();

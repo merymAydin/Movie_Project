@@ -8,7 +8,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.DataAccess.Repositories.Abstract
 {
-    public interface IDirectorRepository : IGenericRepository<Director>
+    public interface IDirectorRepository : IGenericRepository<Director>,IGenericRepositoryAsync<Director>
     {
     }
 }

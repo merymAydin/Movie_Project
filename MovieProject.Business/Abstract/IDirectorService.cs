@@ -9,7 +9,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Abstract
 {
-    public interface IDirectorService : IGenericService<Director,DirectorResponseDto,DirectorsAddRequestDto,DirectorsUpdateRequestDto>
+    public interface IDirectorService : IGenericService<Director, DirectorResponseDto, DirectorsAddRequestDto, DirectorsUpdateRequestDto>, IGenericServiceAsync<Director, DirectorResponseDto, DirectorsAddRequestDto, DirectorsUpdateRequestDto>
     {
         //List<Director> GetByFirstName(string firstname);
         //List<Director> GetByLastName(string lastname);

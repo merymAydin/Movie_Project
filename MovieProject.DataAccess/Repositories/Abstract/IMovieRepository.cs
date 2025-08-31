@@ -8,7 +8,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.DataAccess.Repositories.Abstract
 {
-    public interface IMovieRepository : IGenericRepository<Movie>
+    public interface IMovieRepository : IGenericRepository<Movie>, IGenericRepositoryAsync<Movie>
     {
     }
 }

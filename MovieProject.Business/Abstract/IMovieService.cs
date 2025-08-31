@@ -9,7 +9,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Abstract
 {
-    public interface IMovieService : IGenericService<Movie, MovieResponseDto, MovieAddRequestDto,MovieUpdateRequestDto> 
+    public interface IMovieService : IGenericService<Movie, MovieResponseDto, MovieAddRequestDto, MovieUpdateRequestDto>, IGenericServiceAsync<Movie, MovieResponseDto, MovieAddRequestDto, MovieUpdateRequestDto> 
     {
         //List<Movie> GetByName(string name);
         //List<Movie> GetByLessThanIMDB(decimal imdb);

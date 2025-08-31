@@ -26,9 +26,14 @@ namespace MovieProject.Business.Concrete
 
         public ICollection<MovieResponseDto> GetAll()
         {
-            var movies = _movieRepository.GetAll(m=>!m.IsDeleted);
+            var movies = _movieRepository.GetAll(m=> !m.IsDeleted);
             var movieDtos = _mapper.Map<ICollection<MovieResponseDto>>(movies);
             return movieDtos;
+        }
+
+        public async Task<ICollection<MovieResponseDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public MovieResponseDto GetById(Guid id)
@@ -41,6 +46,11 @@ namespace MovieProject.Business.Concrete
 
             var movieDto = _mapper.Map<MovieResponseDto>(movie);
             return movieDto;
+        }
+
+        public async Task<MovieResponseDto> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public List<MovieDetailDto> GetByMoviesWithFullInfo()
@@ -58,6 +68,11 @@ namespace MovieProject.Business.Concrete
         {
             var movie = _mapper.Map<Movie>(dto);
             _movieRepository.Add(movie);
+        }
+
+        public async Task InsertAsync(MovieAddRequestDto dto)
+        {
+            throw new NotImplementedException();
         }
 
         public void Modify(MovieUpdateRequestDto dto)
@@ -78,6 +93,16 @@ namespace MovieProject.Business.Concrete
             movie.IsActive = false;
             movie.UpdateAt = DateTime.Now;
             _movieRepository.Update(movie);
+        }
+
+        public async Task RemoveAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAsync(MovieUpdateRequestDto dto)
+        {
+            throw new NotImplementedException();
         }
 
         //public List<Movie> GetAll()

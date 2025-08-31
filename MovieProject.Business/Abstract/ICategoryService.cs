@@ -9,7 +9,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Abstract
 {
-    public interface ICategoryService : IGenericService<Category,CategoryResponseDto,CategoryAddRequestDto,CategoryUpdateRequestDto>
+    public interface ICategoryService : IGenericService<Category,CategoryResponseDto,CategoryAddRequestDto,CategoryUpdateRequestDto>, IGenericServiceAsync<Category, CategoryResponseDto, CategoryAddRequestDto, CategoryUpdateRequestDto>
     {
         //void Insert(CategoryAddRequestDto dto);
         //void Modify(CategoryUpdateRequestDto dto);

@@ -30,6 +30,11 @@ namespace MovieProject.Business.Concrete
             return categoryDtos;
         }
 
+        public async Task<ICollection<CategoryResponseDto>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public CategoryResponseDto GetById(Guid id)
         {
             var category = _categoryRepository.Get(c => c.Id.Equals(id));
@@ -39,6 +44,11 @@ namespace MovieProject.Business.Concrete
             }
             var categoryDto = _mapper.Map<CategoryResponseDto>(category);
             return categoryDto;
+        }
+
+        public async Task<CategoryResponseDto> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public CategoryResponseDto GetByIdResponse(Guid id)
@@ -56,6 +66,22 @@ namespace MovieProject.Business.Concrete
         {
             Category category = _mapper.Map<Category>(dto);
             _categoryRepository.Add(category);
+        }
+
+        public async Task InsertAsync(CategoryAddRequestDto dto)
+        {
+            try
+            {
+                if (dto == null)
+                {
+                    throw new ArgumentNullException(nameof(dto), "CategoryAddRequestDto cannot be null");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public void Modify(CategoryUpdateRequestDto dto)
@@ -76,6 +102,16 @@ namespace MovieProject.Business.Concrete
             category.IsActive= false;
             category.UpdateAt= DateTime.Now;
             _categoryRepository.Update(category);
+        }
+
+        public async Task RemoveAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateAsync(CategoryUpdateRequestDto dto)
+        {
+            throw new NotImplementedException();
         }
         //public List<Category> GetAll()
         //{
