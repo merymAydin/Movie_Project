@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
+using Core.DataAccess;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MovieProject.Business.Abstract;
@@ -31,14 +32,14 @@ namespace MovieProject.WebAPI
                     );
                 }
             );
-
+            builder.Services.AddControllers();
             builder.Services.AddDbContext<MovieDbContext>();
             builder.Services.AddScoped<ICategoryService,CategoryManager>();
-            builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
-            //builder.Services.AddScoped<IMovieService, MovieManager>();
-            builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
-            //builder.Services.AddScoped<IDirectorService, DirectorManager>();
-            builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
+            //builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
+            ////builder.Services.AddScoped<IMovieService, MovieManager>();
+            //builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
+            ////builder.Services.AddScoped<IDirectorService, DirectorManager>();
+            //builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
             //builder.Services.AddScoped<IActorService, ActorManager>();
             builder.Services.AddScoped<IActorRepository, EfActorRepository>();
             builder.Services.AddScoped<ICategoryMapper, AutoCategoryMapper>();

@@ -27,6 +27,7 @@ namespace MovieProject.Business.Concrete
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _categoryValidator = new CategoryValidator();
         }
 
         public IResult Insert(CategoryAddRequestDto dto)
@@ -155,7 +156,9 @@ namespace MovieProject.Business.Concrete
             throw new NotImplementedException();
         }
 
-
-
+        public Task<CategoryResponseDto> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
