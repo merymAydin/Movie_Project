@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieProject.Business.Abstract;
 using MovieProject.DataAccess.Repositories.Abstract;
+using MovieProject.Entities.Dtos.Actors;
 using MovieProject.Entities.Entities;
 
 namespace MovieProject.WebAPI.Controllers
@@ -18,48 +19,76 @@ namespace MovieProject.WebAPI.Controllers
             _actorService = actorService;
             _mapper = mapper;
         }
-
-
         [HttpGet]
-        public IActionResult GetAll()
+        public ActionResult GetAll()
         {
-            var directors = _actorService.GetAll();
-            return Ok(directors);
+            var result = _actorService.GetAll(false);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
         }
+        [HttpGet("{id}")]
+        public ActionResult Get(Guid id)
+        {
+            var result = _actorService.GetById(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
+        }
+        [HttpGet("[action]")]
+        public ActionResult GetActorWithMovies(Guid id)
+        {
+            var result = _actorService.GetActorWithMovies(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
+        }
+        [HttpGet("[action]")]
+        public ActionResult GetActorsWithMovies()
+        {
+            var result = _actorService.GetActorsWithMovies();
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
+        }
+        [HttpPost]
+        public IActionResult Create(ActorsAddRequestDto dto)
+        {
+            var result = _actorService.Insert(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
+        }
+        [HttpPut]
+        public IActionResult Update(ActorsUpdateRequestDto dto)
+        {
+            var result = _actorService.Modify(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
+        }
+        [HttpDelete]
+        public IActionResult Delete(Guid id)
+        {
+            var result = _actorService.Remove(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
 
-        //[HttpGet("{id}")]
-        //public IActionResult GetDirector(string id)
-        //{
-        //    Actor actor = _actorService.GetById(Guid.Parse(id));
-        //    var dto = new
-        //    {
-        //        actor.Id,
-        //        actor.FirstName,
-        //        actor.LastName,
-        //        actor.imageUrl,
-        //        actor.BirthDate,
-        //        actor.Description
-        //    };
-        //    return Ok(dto);
-        //}
-        //[HttpGet("GetAllIsActive")]
-        //public IActionResult GetAllIsActive()
-        //{
-        //    var actors = _actorService.GetByIsActive();
-        //    var dto = actors.Select(d => new
-        //    {
-        //        d.Id,
-        //        d.FirstName,
-        //        d.LastName,
-        //        d.imageUrl,
-        //        d.BirthDate,
-        //        d.Description,
-        //        Movies = d.Movies.Select(m => new
-        //        {
-        //            m.Name
-        //        }).ToList()
-        //    }).ToList();
-        //    return Ok(dto);
-        //}
+            }
+            return Ok(result.Message);
+        }
     }
 }

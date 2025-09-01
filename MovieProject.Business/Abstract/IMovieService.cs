@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Business;
+using Core.Business.Utilities.Results;
 using MovieProject.Entities.Dtos.Movies;
 using MovieProject.Entities.Entities;
 
@@ -16,6 +17,6 @@ namespace MovieProject.Business.Abstract
         //List<Movie> GetByGreaterThanIMDB(decimal imdb);
         //List<Movie> GetByCategoryId(Guid categoryId);
         //List<Movie> GetByDirectorId(Guid  directorId);
-        List<MovieDetailDto> GetByMoviesWithFullInfo();
+        IDataResult<List<MovieDetailDto>> GetMoviesWithFullInfo();
     }
 }

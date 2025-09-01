@@ -5,16 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Business;
+using Core.Business.Utilities.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using MovieProject.Business.Abstract;
+using MovieProject.Business.Constants;
 using MovieProject.DataAccess.Repositories.Abstract;
 using MovieProject.Entities.Dtos.Movies;
 using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Concrete
 {
-    public sealed class MovieManager //: IMovieService
+    public sealed class MovieManager : IMovieService
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;
@@ -24,166 +26,133 @@ namespace MovieProject.Business.Concrete
             _mapper = mapper;
         }
 
-        public ICollection<MovieResponseDto> GetAll()
+        public IDataResult<ICollection<MovieResponseDto>> GetAll(bool deleted = false)
         {
-            var movies = _movieRepository.GetAll(m=> !m.IsDeleted);
-            var movieDtos = _mapper.Map<ICollection<MovieResponseDto>>(movies);
-            return movieDtos;
-        }
-
-        public async Task<ICollection<MovieResponseDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public MovieResponseDto GetById(Guid id)
-        {
-            var movie = _movieRepository.Get(m => m.Id.Equals(id));
-            if (movie == null)
+            try
             {
-                throw new KeyNotFoundException($"Movie with ID {id} not found");
+                var movies = _movieRepository.GetAll(m => m.IsDeleted == false);
+                if (movies is null)
+                {
+                    return new ErrorDataResult<ICollection<MovieResponseDto>>(ResultMessages.ErrorListed);
+                }
+                var movieDtos = _mapper.Map<List<MovieResponseDto>>(movies);
+                return new SuccessDataResult<ICollection<MovieResponseDto>>(movieDtos, ResultMessages.SuccessListed);
             }
-
-            var movieDto = _mapper.Map<MovieResponseDto>(movie);
-            return movieDto;
-        }
-
-        public async Task<MovieResponseDto> GetByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<MovieDetailDto> GetByMoviesWithFullInfo()
-        {
-            var movies = _movieRepository.GetQueryable(m => !m.IsDeleted)
-                .Include(m => m.Category)
-                .Include(m => m.Director)
-                .Include(m => m.Actors).ToList();
-
-            var movieDetails = _mapper.Map<List<MovieDetailDto>>(movies);
-            return movieDetails;
-        }
-
-        public void Insert(MovieAddRequestDto dto)
-        {
-            var movie = _mapper.Map<Movie>(dto);
-            _movieRepository.Add(movie);
-        }
-
-        public async Task InsertAsync(MovieAddRequestDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Modify(MovieUpdateRequestDto dto)
-        {
-            var movie = _mapper.Map<Movie>(dto);
-            movie.UpdateAt = DateTime.Now;
-            _movieRepository.Update(movie);
-        }
-
-        public void Remove(Guid id)
-        {
-            var movie = _movieRepository.Get(m => m.Id.Equals(id));
-            if (movie == null)
+            catch (Exception e)
             {
-                throw new KeyNotFoundException($"Movie with ID {id} not found");
+                return new ErrorDataResult<ICollection<MovieResponseDto>>($"An error occured while retrieving directors: {e.Message} ");
             }
-            movie.IsDeleted = true;
-            movie.IsActive = false;
-            movie.UpdateAt = DateTime.Now;
-            _movieRepository.Update(movie);
         }
 
-        public async Task RemoveAsync(Guid id)
+        public Task<ICollection<MovieResponseDto>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task UpdateAsync(MovieUpdateRequestDto dto)
+        public IDataResult<MovieResponseDto> GetById(Guid id)
+        {
+            try
+            {
+                var movie = _movieRepository.Get(m => m.Id == id);
+                if (movie is null)
+                {
+                    return new ErrorDataResult<MovieResponseDto>(ResultMessages.ErrorGetById);
+                }
+                var dto = _mapper.Map<MovieResponseDto>(movie);
+                return new SuccessDataResult<MovieResponseDto>(dto, ResultMessages.SuccessGetById);
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<MovieResponseDto>($"An error occured while retrieving directors: {e.Message} ");
+            }
+        }
+
+        public Task<MovieResponseDto> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        //public List<Movie> GetAll()
-        //{
-        //    return _movieRepository.GetAll();
-        //}
+        public IDataResult<List<MovieDetailDto>> GetMoviesWithFullInfo()
+        {
+            try
+            {
+                var movies = _movieRepository.GetQueryable().Include(m => m.Actors).Include(m => m.Director).ThenInclude(d => d.Movies).Include(m => m.Category).ToList();
+                if (movies is null)
+                {
+                    return new ErrorDataResult<List<MovieDetailDto>>(ResultMessages.ErrorListed);
+                }
+                var moviesDto = _mapper.Map<List<MovieDetailDto>>(movies);
+                return new SuccessDataResult<List<MovieDetailDto>>(moviesDto, ResultMessages.SuccessListed);
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<MovieDetailDto>>($"An error occurred while retrieving the director: {e.Message}");
+            }
+        }
 
-        //public List<Movie> GetByCategoryId(Guid categoryId)
-        //{
-        //    return _movieRepository.GetAll(m=>m.CategoryId == categoryId).ToList();
-        //}
+        public IResult Insert(MovieAddRequestDto dto)
+        {
+            try
+            {
+                var movie = _mapper.Map<Movie>(dto);
+                _movieRepository.Add(movie);
+                return new SuccessResult(ResultMessages.SuccessCreated);
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult($"An error occured while retrieving directors: {e.Message} ");
+            }
+        }
 
-        //public List<Movie> GetByDirectorId(Guid directorId)
-        //{
-        //    return _movieRepository.GetAll(m => m.DirectorId == directorId).ToList();
-        //}
+        public Task InsertAsync(MovieAddRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public List<Movie> GetByGreaterThanIMDB(decimal imdb)
-        //{
-        //    return _movieRepository.GetAll(m => m.IMDB >= imdb).ToList();
-        //}
+        public IResult Modify(MovieUpdateRequestDto dto)
+        {
+            try
+            {
+                var movie = _mapper.Map<Movie>(dto);
+                movie.UpdateAt = DateTime.Now;
+                _movieRepository.Update(movie);
+                return new SuccessResult(ResultMessages.SuccessUpdated);
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult($"An error occured while retrieving directors: {e.Message} ");
+            }
+        }
 
-        //public Movie GetById(Guid id)
-        //{
-        //    return _movieRepository.Get(m=>m.Id == id);
-        //}
+        public IResult Remove(Guid id)
+        {
+            try
+            {
+                var movie = _movieRepository.Get(m => m.Id == id);
+                if (movie == null)
+                {
+                    return new ErrorResult(ResultMessages.ErrorGetById);
+                }
+                movie.IsDeleted = true;
+                movie.IsActive = false;
+                movie.UpdateAt = DateTime.Now;
+                _movieRepository.Update(movie);
+                return new SuccessResult(ResultMessages.SuccessDeleted);
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult($"An error occured while retrieving directors: {e.Message} ");
+            }
+        }
 
-        //public List<Movie> GetByIsActive()
-        //{
-        //    return _movieRepository.GetAll(m=>m.IsActive);
-        //}
+        public Task RemoveAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public List<Movie> GetByIsDeleted()
-        //{
-        //    return _movieRepository.GetAll(m => m.IsDeleted);
-        //}
-
-        //public List<Movie> GetByLessThanIMDB(decimal imdb)
-        //{
-        //    return _movieRepository.GetAll(m=> m.IMDB <= imdb).ToList();
-        //}
-
-        //public List<Movie> GetByMoviesWithFullInfo(Guid actorId)
-        //{
-        //    return _movieRepository.GetQueryable()
-        //        .Include(m => m.Category)
-        //        .Include(m => m.Director)
-        //        .Include(m => m.Actors)
-        //        .ToList();
-        //}
-
-        //public List<Movie> GetByMoviesWithFullInfo()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public List<Movie> GetByName(string name)
-        //{
-        //    return _movieRepository.GetAll(m => m.Name.ToLower() == name.ToLower()).ToList();
-        //}
-
-        //public IQueryable<Movie> GetQueryable()
-        //{
-        //   return _movieRepository.GetQueryable();
-        //}
-
-        //public void Insert(Movie entity)
-        //{
-        //    _movieRepository.Add(entity);
-        //}
-
-        //public void Modify(Movie entity)
-        //{
-        //    _movieRepository.Update(entity);
-        //}
-
-        //public void Remove(Movie entity)
-        //{
-        //    entity.IsDeleted = true;
-        //    entity.IsActive = false;
-        //    _movieRepository.Delete(entity);
-        //}
+        public Task UpdateAsync(MovieUpdateRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -21,39 +21,62 @@ namespace MovieProject.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var movies = _movieService.GetAll();
-            return Ok(movies);
+            var result = _movieService.GetAll();
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
         }
-
-        [HttpGet("FullInfo")]
-        public IActionResult GetAllFullInfo()
+        [HttpGet("[action]")]
+        public IActionResult GetAllFullInfo() //ödev olarak tamamla
         {
-            var movies = _movieService.GetByMoviesWithFullInfo();
-            return Ok();
+            var result = _movieService.GetMoviesWithFullInfo();
+            if (!result.Success)
+            {
+                return BadRequest(result.Data);
+            }
+            return Ok(result.Data);
         }
-        [HttpGet("{id : guid}")]
-        public IActionResult GetById([FromRoute(Name = "id")]Guid id)
+        [HttpGet("{id:guid}")]
+        public IActionResult GetById([FromRoute(Name = "id")] Guid id)
         {
-            var movies = _movieService.GetById(id);
-            return Ok(movies);
+            var result = _movieService.GetById(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
         }
         [HttpPost]
         public IActionResult Insert([FromBody] MovieAddRequestDto dto)
         {
-            _movieService.Insert(dto);
-            return StatusCode(201, dto);
+            var result = _movieService.Insert(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
         }
         [HttpPut]
         public IActionResult Update([FromBody] MovieUpdateRequestDto dto)
         {
-            _movieService.Modify(dto);
-            return Ok(dto);
+            var result = _movieService.Modify(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
         }
-        [HttpDelete("{id : guid}")]
+        [HttpDelete("{id:guid}")]
         public IActionResult Delete([FromRoute(Name = "id")] Guid id)
         {
-            _movieService.Remove(id);
-            return Content("Movie was deleted successfully");
+            var result = _movieService.Remove(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
         }
 
     }

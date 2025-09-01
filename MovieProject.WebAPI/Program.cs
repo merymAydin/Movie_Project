@@ -1,11 +1,14 @@
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Core.DataAccess;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MovieProject.Business.Abstract;
 using MovieProject.Business.Concrete;
+using MovieProject.Business.DependencyInjection.AutoFac;
 using MovieProject.Business.Mappers.Categories;
 using MovieProject.Business.Mappers.Profiles;
 using MovieProject.Business.Validators;
@@ -34,14 +37,21 @@ namespace MovieProject.WebAPI
             );
             builder.Services.AddControllers();
             builder.Services.AddDbContext<MovieDbContext>();
-            builder.Services.AddScoped<ICategoryService,CategoryManager>();
-            builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
-            ////builder.Services.AddScoped<IMovieService, MovieManager>();
+
+            //Autofac
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureContainer<ContainerBuilder>(builder =>
+            {
+                builder.RegisterModule(new AutofacBusinessModule());
+            });
+            //builder.Services.AddScoped<ICategoryService,CategoryManager>();
+            //builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
+            //builder.Services.AddScoped<IMovieService, MovieManager>();
             //builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
-            builder.Services.AddScoped<IDirectorService, DirectorManager>();
-            builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
+            //builder.Services.AddScoped<IDirectorService, DirectorManager>();
+            //builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
             //builder.Services.AddScoped<IActorService, ActorManager>();
-            builder.Services.AddScoped<IActorRepository, EfActorRepository>();
+            //builder.Services.AddScoped<IActorRepository, EfActorRepository>();
             builder.Services.AddScoped<ICategoryMapper, AutoCategoryMapper>();
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
