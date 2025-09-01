@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Business;
+using Core.Business.Utilities.Results;
 using MovieProject.Entities.Dtos.Directors;
 using MovieProject.Entities.Entities;
 
@@ -14,7 +15,7 @@ namespace MovieProject.Business.Abstract
         //List<Director> GetByFirstName(string firstname);
         //List<Director> GetByLastName(string lastname);
         //Director GetByFullName(string firstName, string lastName);
-        //List<Director> GetAllFullInfo();
+        IDataResult<List<DirectorDetailDto>> GetAllFullInfo();
         //void Insert (DirectorsAddRequestDto dto);
         //void Modify(DirectorsUpdateRequestDto dto);
         //void Remove(Guid id);

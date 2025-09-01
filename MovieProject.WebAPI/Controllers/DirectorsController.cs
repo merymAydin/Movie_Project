@@ -25,70 +25,100 @@ namespace MovieProject.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var directors = _directorService.GetAll();
-            return Ok(directors);
+            var result = _directorService.GetAll(false);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
         }
 
-        //[HttpGet("FullInfo")]
-        //public IActionResult GetFullInfo()
-        //{
-        //    //var directors = _directorService.GetAllFullInfo();
-        //    //var dto = directors.Select(d => new
-        //    //{
-        //    //    d.Id,
-        //    //    d.FirstName,
-        //    //    d.LastName,
-        //    //    d.imageUrl,
-        //    //    d.BirthDate,
-        //    //    d.Description,
-        //    //    Movies = d.Movies.Select(m => new
-        //    //    {
-        //    //         m.Name,
-        //    //        Category = m.Category.Name,
-        //    //        m.Category.Description
-        //    //    }).ToList()
-        //    //}).ToList();
-        //    var dto = _mapper.Map<List<DirectorResponseDto>>(directors);
-        //    return Ok(dto);
-        //}
-        [HttpGet("{id}")]
-        public IActionResult GetDirector(string id)
+        [HttpGet("[action]")]
+        public IActionResult GetAllDeleted()
         {
-            Director director = _directorService.GetById(Guid.Parse(id));
-            var dto = new
+            var result = _directorService.GetAll(true);
+            if (!result.Success)
             {
-                director.Id,
-                director.FirstName,
-                director.LastName,
-                director.imageUrl,
-                director.BirthDate,
-                director.Description,
-                Movies = director.Movies.Select(m => new
-                {
-                    m.Name
-                }).ToList()
-            };
-            return Ok(dto);
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
+        }
+
+
+        [HttpGet("FullInfo")]
+        public IActionResult GetFullInfo()
+        {
+            var result = _directorService.GetAllFullInfo();
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetDirector(Guid id)
+        {
+            var result = _directorService.GetById(id);
+            if (!result.Success)
+            {
+                return NotFound(result.Message);
+            }
+            return Ok(result.Data);
         }
         [HttpGet("GetAllIsActive")]
         public IActionResult GetAllIsActive()
         {
-            var directors = _directorService.GetByIsActive();
-            var dto = directors.Select(d => new
-            {
-                d.Id,
-                d.FirstName,
-                d.LastName,
-                d.imageUrl,
-                d.BirthDate,
-                d.Description,
-                Movies = d.Movies.Select(m => new
-                {
-                    m.Name
-                }).ToList()
-            }).ToList();
-            return Ok(dto);
+            //var directors = _directorService.GetByIsActive();
+            //var dto = directors.Select(d => new
+            //{
+            //    d.Id,
+            //    d.FirstName,
+            //    d.LastName,
+            //    d.ImageUrl,
+            //    d.BirthDate,
+            //    d.Description,
+            //    Movies = d.Movies.Select(m => new
+            //    {
+            //        m.Name
+            //    }).ToList()
+            //}).ToList();
+            return Ok();
         }
 
+        [HttpPost]
+        public IActionResult CreateDirector(DirectorsAddRequestDto dto)
+        {
+            var result = _directorService.Insert(dto);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
+        }
+
+        [HttpPut]
+        public IActionResult UpdateDirector(DirectorsUpdateRequestDto dto)
+        {
+            var result = _directorService.Modify(dto);
+            if (result.Success)
+            {
+                return Ok(result.Message);
+            }
+
+            return BadRequest(result.Message);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDirector(Guid id)
+        {
+            var result = _directorService.Remove(id);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
+        }
     }
 }

@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text.Json.Serialization;
+using Core.Business.Utilities.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MovieProject.Business.Abstract;
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using MovieProject.Entities.Entities;
+using MovieProject.Business.Abstract;
 using MovieProject.Business.Mappers.Categories;
 using MovieProject.Entities.Dtos.Categories;
+using MovieProject.Entities.Entities;
 
 namespace MovieProject.WebAPI.Controllers
 {
@@ -21,17 +22,38 @@ namespace MovieProject.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var categories = _categoryService.GetAll();
-            return Ok(categories);
+            var result = _categoryService.GetAll(false);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+            //var categories = _categoryService.GetAll();
+            //return Ok(categories);
+        }
+        [HttpGet("[action]")]
+        public IActionResult GetAllDeleted()
+        {
+            var result = _categoryService.GetAll(true);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Data);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
-            var category = _categoryService.GetById(id);
-            return Ok(category);
+            var result = _categoryService.GetById(id);
+            if (!result.Success)
+            {
+                return NotFound(result.Message);
+            }
+            return Ok(result.Data);
+            //var category = _categoryService.GetById(id);
+            //return Ok(category);
         }
-
         [HttpPost]
         public IActionResult Create(CategoryAddRequestDto category)
         {
@@ -40,21 +62,27 @@ namespace MovieProject.WebAPI.Controllers
             {
                 return BadRequest(result.Message);
             }
-            return Ok(category);
+            return Ok(result.Message);
         }
-
         [HttpPut]
         public IActionResult Update(CategoryUpdateRequestDto category)
         {
-            _categoryService.Modify(category);
-            return Content("Category was updated successfully");
+            var result = _categoryService.Modify(category);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
         }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            _categoryService.Remove(id);
-            return Content("Category was deleted successfully...");
+            var result = _categoryService.Remove(id);
+            if (!result.Success)
+            {
+                return NotFound(result.Message);
+            }
+            return Ok(result.Message);
         }
 
         //[HttpGet("active")]

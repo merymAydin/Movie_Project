@@ -8,7 +8,7 @@ using CoreEntity;
 namespace MovieProject.Entities.Dtos.Directors
 {
     public sealed record DirectorResponseDto(
-        Guid id,
+        Guid Id,
         string FirstName,
         string LastName,
         string ImageUrl,

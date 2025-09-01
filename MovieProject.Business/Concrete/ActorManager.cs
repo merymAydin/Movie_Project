@@ -120,14 +120,6 @@ namespace MovieProject.Business.Concrete
             throw new NotImplementedException();
         }
 
-        ICollection<ActorsResponseDto> IGenericService<Actor, ActorsResponseDto, ActorsAddRequestDto, ActorsUpdateRequestDto>.GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        ActorsResponseDto IGenericService<Actor, ActorsResponseDto, ActorsAddRequestDto, ActorsUpdateRequestDto>.GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

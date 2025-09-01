@@ -6,18 +6,22 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Business;
+using Core.Business.Utilities.Results;
 using Microsoft.EntityFrameworkCore;
 using MovieProject.Business.Abstract;
+using MovieProject.Business.Constants;
 using MovieProject.DataAccess.Repositories.Abstract;
+using MovieProject.Entities.Dtos.Categories;
 using MovieProject.Entities.Dtos.Directors;
 using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Concrete
 {
-    public sealed class DirectorManager //: IDirectorService
+    public sealed class DirectorManager : IDirectorService
     {
         private readonly IDirectorRepository _directorRepository;
         private readonly IMapper _mapper;
+
 
         public DirectorManager(IDirectorRepository directorRepository, IMapper mapper)
         {
@@ -25,111 +29,133 @@ namespace MovieProject.Business.Concrete
             _mapper = mapper;
         }
 
-        public ICollection<DirectorResponseDto> GetAll()
+        public IDataResult<ICollection<DirectorResponseDto>> GetAll(bool deleted = false)
         {
-            var directors = _directorRepository.GetQueryable().ToList();
-            if (directors is null)
+            try
             {
-                return new List<DirectorResponseDto>();
+                var directors = _directorRepository.GetAll(d => d.IsDeleted == deleted);
+                if (directors is null || !directors.Any())
+                {
+                    return new ErrorDataResult<ICollection<DirectorResponseDto>>(ResultMessages.ErrorListed);
+                }
+                var dtos = _mapper.Map<ICollection<DirectorResponseDto>>(directors);
+                return new SuccessDataResult<ICollection<DirectorResponseDto>>(dtos, ResultMessages.SuccessListed);
             }
-            List<DirectorResponseDto> dtos = _mapper.Map<List<DirectorResponseDto>>(directors);
-            return dtos;
-        }
-
-        public DirectorResponseDto GetById(Guid id)
-        {
-            var director = _directorRepository.Get(d => d.Id == id);
-            if (directors is null)
+            catch (Exception e)
             {
-                throw new KeyNotFoundException($"Director with ID {id} not found");
+                return new ErrorDataResult<ICollection<DirectorResponseDto>>($"An error occured while retrieving directors : {e.Message}");
             }
-            DirectorResponseDto dto = _mapper.Map<DirectorResponseDto>(director);
-            return dto;
         }
 
-        public void Insert(DirectorsAddRequestDto dto)
+        public Task<ICollection<DirectorResponseDto>> GetAllAsync()
         {
-            Director director = _mapper.Map<Director>(dto);
-            _directorRepository.Add(director);
+            throw new NotImplementedException();
         }
 
-        public void Modify(DirectorsUpdateRequestDto dto)
+        public IDataResult<DirectorResponseDto> GetById(Guid id)
         {
-            Director director = _mapper.Map<Director>(dto);
-            director.UpdateAt = DateTime.Now;
-            _directorRepository.Update(director);
+            try
+            {
+                var director = _directorRepository.Get(d => d.Id == id);
+                if (director == null)
+                {
+                    return new ErrorDataResult<DirectorResponseDto>(ResultMessages.ErrorGetById);
+                }
+                var dto = _mapper.Map<DirectorResponseDto>(director);
+                return new SuccessDataResult<DirectorResponseDto>(dto, ResultMessages.SuccessGetById);
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<DirectorResponseDto>($"An error occured while retrieving the director : {e.Message}");
+            }
         }
 
-        public void Remove(Guid id)
+        public Task<DirectorResponseDto> GetByIdAsync(Guid id)
         {
-            Director director = _directorRepository.Get(d => d.Id == id);
-            director.IsActive = false;
-            director.IsDeleted = true;
-            director.UpdateAt = DateTime.Now;
-            _directorRepository.Update(director);
+            throw new NotImplementedException();
         }
 
-        //public List<Director> GetAll()
-        //{
-        //    return _directorRepository.GetAll();
-        //}
+        public IResult Insert(DirectorsAddRequestDto dto)
+        {
+            try
+            {
+                var director = _mapper.Map<Director>(dto);
+                _directorRepository.Add(director);
+                return new SuccessResult(ResultMessages.SuccessCreated);
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult(ResultMessages.ErrorCreated);
+            }
+        }
 
-        //public List<Director> GetByFirstName(string firstname)
-        //{
-        //    return _directorRepository.GetAll(d => d.FirstName == firstname);
-        //}
+        public Task InsertAsync(DirectorsAddRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public Director GetByFullName(string firstName, string lastName)
-        //{
-        //    return _directorRepository.Get(d => d.FirstName == firstName && d.LastName == lastName);
-        //}
+        public IResult Modify(DirectorsUpdateRequestDto dto)
+        {
+            try
+            {
+                var director = _mapper.Map<Director>(dto);
+                director.UpdateAt = DateTime.Now;
+                _directorRepository.Update(director);
+                return new SuccessResult(ResultMessages.SuccessUpdated);
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult($"An error occured while retriving directors: {e.Message}");
+            }
+        }
 
-        //public Director GetById(Guid id)
-        //{
-        //    //return _directorRepository.Get(d => d.Id == id);
-        //    return _directorRepository.GetQueryable(d => d.Id == id).Include(d => d.Movies).FirstOrDefault();
-        //}
+        public IResult Remove(Guid id)
+        {
+             try
+            {
+                var director = _directorRepository.Get(d => d.Id == id);
+                if (director == null)
+                {
+                    return new ErrorResult(ResultMessages.ErrorGetById);
+                }
+                director.IsDeleted = true;
+                director.IsActive = false;
+                director.UpdateAt=DateTime.Now;
+                _directorRepository.Update(director);
+                return new SuccessResult(ResultMessages.SuccessUpdated);
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult($"An error occured while retriving directors: {e.Message}");
+            }
+        }
 
-        //public List<Director> GetByIsActive()
-        //{
-        //    return _directorRepository.GetAll(d => d.IsActive);
-        //}
+        public Task RemoveAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public List<Director> GetByIsDeleted()
-        //{
-        //    return _directorRepository.GetAll(d => d.IsDeleted);
-        //    //return _directorRepository.GetQueryable(d => d.IsDeleted).Include(d=>d.Movies).ToList();
-        //}
+        public Task UpdateAsync(DirectorsUpdateRequestDto dto)
+        {
+            throw new NotImplementedException();
+        }
+        public IDataResult<List<DirectorDetailDto>> GetAllFullInfo()
+        {
+            try
+            {
+                var directors = _directorRepository.GetQueryable().Include(d => d.Movies).ThenInclude(m => m.Actors).ToList();
+                if (directors is null)
+                {
+                    return new ErrorDataResult<List<DirectorDetailDto>>(ResultMessages.ErrorListed);
+                }
 
-        //public List<Director> GetByLastName(string lastname)
-        //{
-        //    return _directorRepository.GetAll(d => d.LastName == lastname);
-        //}
-
-        //public IQueryable<Director> GetQueryable()
-        //{
-        //    return _directorRepository.GetQueryable();
-        //}
-
-        //public void Insert(Director entity)
-        //{ 
-        //    _directorRepository.Add(entity);
-        //}
-
-        //public void Modify(Director entity)
-        //{
-        //    _directorRepository.Update(entity);
-        //}
-
-        //public void Remove(Director entity)
-        //{
-        //    _directorRepository.Delete(entity);
-        //}
-
-        //public List<Director> GetAllFullInfo()
-        //{
-        //    return _directorRepository.GetQueryable()
-        //        .Include(d => d.Movies).ThenInclude(m=>m.Category).ToList();
-        //}
+                var directorsDto = _mapper.Map<List<DirectorDetailDto>>(directors);
+                return new SuccessDataResult<List<DirectorDetailDto>>(directorsDto, ResultMessages.SuccessListed);
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<DirectorDetailDto>>($"An error occurred while retrieving the director: {e.Message}");
+            }
+        }
     }
 }

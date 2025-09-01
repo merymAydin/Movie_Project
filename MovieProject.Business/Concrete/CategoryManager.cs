@@ -23,10 +23,12 @@ namespace MovieProject.Business.Concrete
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly CategoryValidator _categoryValidator;
-        public CategoryManager(ICategoryRepository categoryRepository , IMapper mapper)
+        private readonly CategoryUpdateValidator _updateValidator;
+        public CategoryManager(ICategoryRepository categoryRepository, IMapper mapper, CategoryUpdateValidator updateValidator)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _updateValidator = new CategoryUpdateValidator();
             _categoryValidator = new CategoryValidator();
         }
 
@@ -53,12 +55,22 @@ namespace MovieProject.Business.Concrete
         {
             try
             {
+                ValidationResult result = _updateValidator.Validate(dto);
+                if (!result.IsValid)
+                {
+                    string errormessages = string.Join(",\n", result.Errors.Select(e => e.ErrorMessage));
+                    return new ErrorResult($"{ResultMessages.ErrorCategoryUpdated},\nHataListesi\n{errormessages}");
+                }
+                var category = _mapper.Map<Category>(dto);
+                category.UpdateAt = DateTime.Now;
 
+                _categoryRepository.Update(category);
+                return new SuccessResult(ResultMessages.SuccessCategoryUpdated);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                return new ErrorResult($"An error occured while updating the category{e.Message}");
+
             }
         }
 

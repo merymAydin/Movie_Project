@@ -35,11 +35,11 @@ namespace MovieProject.WebAPI
             builder.Services.AddControllers();
             builder.Services.AddDbContext<MovieDbContext>();
             builder.Services.AddScoped<ICategoryService,CategoryManager>();
-            //builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
+            builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
             ////builder.Services.AddScoped<IMovieService, MovieManager>();
             //builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
-            ////builder.Services.AddScoped<IDirectorService, DirectorManager>();
-            //builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
+            builder.Services.AddScoped<IDirectorService, DirectorManager>();
+            builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
             //builder.Services.AddScoped<IActorService, ActorManager>();
             builder.Services.AddScoped<IActorRepository, EfActorRepository>();
             builder.Services.AddScoped<ICategoryMapper, AutoCategoryMapper>();
