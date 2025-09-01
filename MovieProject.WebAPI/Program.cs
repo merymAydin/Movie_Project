@@ -1,13 +1,17 @@
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MovieProject.Business.Abstract;
 using MovieProject.Business.Concrete;
 using MovieProject.Business.Mappers.Categories;
 using MovieProject.Business.Mappers.Profiles;
+using MovieProject.Business.Validators;
 using MovieProject.DataAccess.Contexts;
 using MovieProject.DataAccess.Repositories.Abstract;
 using MovieProject.DataAccess.Repositories.Concrete.EntityFramework;
+using MovieProject.Entities.Entities;
 
 namespace MovieProject.WebAPI
 {
@@ -31,14 +35,19 @@ namespace MovieProject.WebAPI
             builder.Services.AddDbContext<MovieDbContext>();
             builder.Services.AddScoped<ICategoryService,CategoryManager>();
             builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
-            builder.Services.AddScoped<IMovieService, MovieManager>();
+            //builder.Services.AddScoped<IMovieService, MovieManager>();
             builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
-            builder.Services.AddScoped<IDirectorService, DirectorManager>();
+            //builder.Services.AddScoped<IDirectorService, DirectorManager>();
             builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
-            builder.Services.AddScoped<IActorService, ActorManager>();
+            //builder.Services.AddScoped<IActorService, ActorManager>();
             builder.Services.AddScoped<IActorRepository, EfActorRepository>();
             builder.Services.AddScoped<ICategoryMapper, AutoCategoryMapper>();
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
+
+
+            builder.Services.AddValidatorsFromAssembly(typeof(CategoryValidator).Assembly);
+            builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+            builder.Services.AddFluentValidationAutoValidation();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

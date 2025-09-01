@@ -14,7 +14,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Concrete
 {
-    public sealed class MovieManager : IMovieService
+    public sealed class MovieManager //: IMovieService
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;

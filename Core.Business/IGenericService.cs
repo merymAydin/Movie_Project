@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Business.Utilities.Results;
 using CoreEntity;
 
 namespace Core.Business
@@ -15,10 +16,10 @@ namespace Core.Business
         where TUpdateDto : class, IUpdateDto
 
     {
-        void Insert(TCreateDto dto);
-        void Modify(TUpdateDto dto);
-        void Remove(Guid id);
-        ICollection<TResponseDto> GetAll();
-        TResponseDto GetById(Guid id);
+        IResult Insert(TCreateDto dto);
+        IResult Modify(TUpdateDto dto);
+        IResult Remove(Guid id);
+        IDataResult<ICollection<TResponseDto>> GetAll(bool deleted = false);
+        IDataResult<TResponseDto> GetById(Guid id);
     }
 }

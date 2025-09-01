@@ -12,7 +12,7 @@ using MovieProject.Entities.Entities;
 
 namespace MovieProject.Business.Concrete
 {
-    public sealed class ActorManager : IActorService
+    public sealed class ActorManager // : IActorService
     {
         private readonly IActorRepository _actorRepository;
 

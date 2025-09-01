@@ -35,7 +35,11 @@ namespace MovieProject.WebAPI.Controllers
         [HttpPost]
         public IActionResult Create(CategoryAddRequestDto category)
         {
-            _categoryService.Insert(category);
+            var result = _categoryService.Insert(category);
+            if (!result.Success)
+            {
+                return BadRequest(result.Message);
+            }
             return Ok(category);
         }
 
