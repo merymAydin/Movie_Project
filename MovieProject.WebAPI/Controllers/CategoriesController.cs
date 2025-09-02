@@ -85,29 +85,34 @@ namespace MovieProject.WebAPI.Controllers
             return Ok(result.Message);
         }
 
+
         //[HttpGet("active")]
         //public IActionResult GetActiveCategories()
         //{
-        //    var category = _categoryService.GetByIsActive();
-        //    return Ok(category);
+        //    return Ok();
         //}
-
         //[HttpGet("GetAllFullInfo")]
         //public IActionResult GetAllFullInfo()
         //{
-        //    var categories = _categoryService.GetQueryable().Include(c=>c.Movies).ToList();
-        //    //List<CategoryResponseDto> dtos = new List<CategoryResponseDto>();
-        //    //foreach (var category in categories)
-        //    //{
-        //    //    dtos.Add(new CategoryResponseDto
-        //    //    {
-        //    //        Id = category.Id,
-        //    //        Name = category.Name ?? string.Empty,
-        //    //        Description = category.Description ?? string.Empty
-        //    //    });
-        //    //}
-        //    var dto = _mapper.ConvertToResponseList(categories);
-        //    return Ok(dto);
+        //var categories = _categoryService.GetQueryable().Include(c=>c.Movies).ToList();
+        //List<CategoryResponseDto> dtos = new List<CategoryResponseDto>();
+        //foreach (var category in categories) 
+        //{
+        //    dtos.Add(new CategoryResponseDto()
+        //    {
+        //        Id = category.Id,
+        //        Name = category.Name,
+        //        Description = category.Description ?? string.Empty,
+        //    });
+        //}
+        //var x = new DirectorsResponseDto(Guid.NewGuid(), "Akın","Cengiz","asdafs",DateTime.Now,"asfgsfgdhezf");
+        //var y = new DirectorsResponseDto(Guid.NewGuid(), "Akın", "Cengiz", "asd", DateTime.Now, "asdf")
+        //{
+
+        //};
+
+        //var dto = _mapper.ConvertToResponseList(categories);
+        //return Ok(dto);
         //}
     }
 }

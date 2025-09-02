@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CoreEntity.Concrete;
 using Microsoft.EntityFrameworkCore;
 using MovieProject.Entities.Entities;
+using User = MovieProject.Entities.Entities.User;
 
 namespace MovieProject.DataAccess.Contexts
 {

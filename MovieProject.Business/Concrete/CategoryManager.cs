@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -99,7 +99,7 @@ namespace MovieProject.Business.Concrete
         {
             try
             {
-                var categories = _categoryRepository.GetAll(c => !c.IsDeleted == deleted);
+                var categories = _categoryRepository.GetAll(c => c.IsDeleted == deleted);
                 if (categories is null || !categories.Any())
                 {
                     return new ErrorDataResult<ICollection<CategoryResponseDto>>(ResultMessages.ErrorCategoryListed);
