@@ -3,9 +3,13 @@ using System.Text.Json.Serialization;
 using System.Xml;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Core.Business.Security.Jwt;
+using Core.Business.Security.Jwt.Encyriptions;
 using Core.DataAccess;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using MovieProject.Business.Abstract;
 using MovieProject.Business.Concrete;
 using MovieProject.Business.DependencyInjection.AutoFac;
@@ -26,43 +30,45 @@ namespace MovieProject.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
             builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.WithOrigins("http://localhost:5173/")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                );
+            });
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+                options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    options.AddPolicy("AllowAllOrigins",
-                        builder => builder.AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader()
-                    );
-                }
-            );
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = tokenOptions.Issuer,
+                    ValidAudience = tokenOptions.Audience,
+                    IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
+                };
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddDbContext<MovieDbContext>();
-
-            //Autofac
-            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureContainer<ContainerBuilder>(builder =>
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).ConfigureContainer<ContainerBuilder>(builder =>
             {
                 builder.RegisterModule(new AutofacBusinessModule());
             });
-            //builder.Services.AddScoped<ICategoryService,CategoryManager>();
-            //builder.Services.AddScoped<ICategoryRepository, EfCategoryRepository>();
-            //builder.Services.AddScoped<IMovieService, MovieManager>();
-            //builder.Services.AddScoped<IMovieRepository, EfMovieRepository>();
-            //builder.Services.AddScoped<IDirectorService, DirectorManager>();
-            //builder.Services.AddScoped<IDirectorRepository, EfDirectorRepository>();
-            //builder.Services.AddScoped<IActorService, ActorManager>();
-            //builder.Services.AddScoped<IActorRepository, EfActorRepository>();
             builder.Services.AddScoped<ICategoryMapper, AutoCategoryMapper>();
             builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-
-
-            builder.Services.AddValidatorsFromAssembly(typeof(CategoryValidator).Assembly);
             builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
-            builder.Services.AddFluentValidationAutoValidation();
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -73,9 +79,8 @@ namespace MovieProject.WebAPI
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAllOrigins");
             app.UseAuthorization();
-
 
             app.MapControllers();
 
